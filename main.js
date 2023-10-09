@@ -11,9 +11,13 @@ const cd = $(".cd");
 const progress = $(".progress");
 const nextBtn = $(".btn-next");
 const prevBtn = $(".btn-prev");
+const randomBtn = $(".btn-random");
+console.log(randomBtn);
+
 const app = {
   currentIndex: 0,
   isPlaying: false,
+  isRandom: false,
   song: [
     {
       name: "Lần cuối",
@@ -133,13 +137,40 @@ const app = {
 
     //? click to next song
     nextBtn.onclick = function () {
-      app.nextSong();
+      if (_this.isRandom) {
+        _this.playRandomSong();
+      } else {
+        app.nextSong();
+      }
       audio.play();
     };
     //? click to previous song
     prevBtn.onclick = function () {
-      app.prevSong();
+      if (_this.isRandom) {
+        _this.playRandomSong();
+      } else {
+        app.prevSong();
+      }
       audio.play();
+    };
+    console.log("isRandom: " + _this.isRandom);
+
+    //? xư lý random bật tất song
+    randomBtn.onclick = function () {
+      //* Cách 1:
+      // if (_this.isRandom) {
+      //   _this.isRandom = false;
+      //   randomBtn.classList.remove("active");
+      // }else {
+      // _this.isRandom = true;
+      //   randomBtn.classList.add("active");
+      //  }
+      //
+
+      //* Cách 2:
+      _this.isRandom = !_this.isRandom;
+      console.log("isRandom: " + _this.isRandom);
+      randomBtn.classList.toggle("active", _this.isRandom);
     };
   },
 
@@ -173,6 +204,17 @@ const app = {
     }
     this.loadCurrentSong();
   },
+  // ===================== PLAY RANDOM SONG =================
+  playRandomSong: function () {
+    let newIndex;
+    do {
+      // hàm random trong list song
+      newIndex = Math.floor(Math.random() * this.song.length);
+    } while (newIndex === this.currentIndex);
+    this.currentIndex = newIndex;
+    this.loadCurrentSong();
+  },
+
   //? PLAY APP
   start: function () {
     // Định nghĩa ra 1 thuộc tính cho object
